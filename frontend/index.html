@@ -48,7 +48,7 @@
                         <i class="fas fa-play"></i> Watch Demo
                     </button>
                 </div>
-                <div class="hero-stats">
+                <!-- <div class="hero-stats">
                     <div class="stat">
                         <span class="stat-number">50K+</span>
                         <span class="stat-label">Patients Served</span>
@@ -61,7 +61,7 @@
                         <span class="stat-number">95%</span>
                         <span class="stat-label">Accuracy Rate</span>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="hero-image">
                 <div class="floating-card">
@@ -240,6 +240,119 @@
         </div>
     </section>
 
+<section id="diseases" class="diseases-section">
+    <div class="container">
+        <h2>Disease Information Center</h2>
+        <div class="disease-cards">
+            <div class="disease-card" onclick="openDiseaseInfo('alzheimer')">
+                <div class="disease-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Alzheimer's Disease</h3>
+                <p>Learn about symptoms, causes, and treatment options</p>
+            </div>
+            <div class="disease-card" onclick="openDiseaseInfo('skin-cancer')">
+                <div class="disease-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Skin Cancer</h3>
+                <p>Early detection and prevention information</p>
+            </div>
+            <div class="disease-card" onclick="openDiseaseInfo('diabetic-retinopathy')">
+                <div class="disease-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>Diabetic Retinopathy</h3>
+                <p>Retinal complications and screening guidelines</p>
+            </div>
+            <div class="disease-card" onclick="openDiseaseInfo('bone-fracture')">
+    <div class="disease-icon">
+        <i class="fas fa-bone"></i>
+    </div>
+    <h3>Bone Fractures</h3>
+    <p>Types, diagnosis, and recovery information</p>
+</div>
+            <div class="disease-card" onclick="openDiseaseInfo('tuberculosis')">
+                <div class="disease-icon">
+                    <i class="fas fa-lungs"></i>
+                </div>
+                <h3>Tuberculosis</h3>
+                <p>Symptoms, transmission, and treatment details</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Precaution Hub Section -->
+    <section class="precaution-hub">
+        <div class="container">
+            <div class="precaution-header">
+                <div class="precaution-logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>Precaution Hub</h2>
+                </div>
+                <p>Essential preventive measures for each disease</p>
+            </div>
+            <div class="precaution-grid">
+                <div class="precaution-card">
+                    <h3><i class="fas fa-brain"></i> Alzheimer's Prevention</h3>
+                    <ul>
+                        <li>Regular physical exercise</li>
+                        <li>Mediterranean diet</li>
+                        <li>Mental stimulation activities</li>
+                        <li>Social engagement</li>
+                        <li>Quality sleep (7-8 hours)</li>
+                        <li>Stress management</li>
+                    </ul>
+                </div>
+                <div class="precaution-card">
+                    <h3><i class="fas fa-user-md"></i> Skin Cancer Prevention</h3>
+                    <ul>
+                        <li>Use broad-spectrum sunscreen (SPF 30+)</li>
+                        <li>Avoid peak sun hours (10 AM - 4 PM)</li>
+                        <li>Wear protective clothing</li>
+                        <li>Regular skin self-examinations</li>
+                        <li>Avoid tanning beds</li>
+                        <li>Annual dermatologist checkups</li>
+                    </ul>
+                </div>
+                <div class="precaution-card">
+                    <h3><i class="fas fa-eye"></i> Diabetic Retinopathy Prevention</h3>
+                    <ul>
+                        <li>Maintain blood sugar levels</li>
+                        <li>Regular eye examinations</li>
+                        <li>Control blood pressure</li>
+                        <li>Manage cholesterol levels</li>
+                        <li>Quit smoking</li>
+                        <li>Healthy diet and exercise</li>
+                    </ul>
+                </div>
+                <div class="precaution-card">
+                    <h3><i class="fas fa-bone"></i> Bone Fracture Prevention</h3>
+                    <ul>
+                        <li>Calcium and Vitamin D intake</li>
+                        <li>Regular weight-bearing exercise</li>
+                        <li>Fall prevention measures</li>
+                        <li>Avoid smoking and excessive alcohol</li>
+                        <li>Bone density screening</li>
+                        <li>Safe home environment</li>
+                    </ul>
+                </div>
+                <div class="precaution-card">
+                    <h3><i class="fas fa-lungs"></i> Tuberculosis Prevention</h3>
+                    <ul>
+                        <li>Good ventilation in living spaces</li>
+                        <li>Avoid close contact with TB patients</li>
+                        <li>Strengthen immune system</li>
+                        <li>Regular health screenings</li>
+                        <li>Proper nutrition</li>
+                        <li>BCG vaccination if recommended</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- About Section -->
     <section id="about" class="about">
         <div class="container">
@@ -248,7 +361,7 @@
                 <div class="about-text">
                     <h3>Revolutionizing Healthcare with AI</h3>
                     <p>MedVision AI leverages cutting-edge artificial intelligence to provide instant, accurate medical image analysis. Our mission is to make advanced diagnostic tools accessible to healthcare providers worldwide.</p>
-                    <div class="about-stats">
+                    <!-- <div class="about-stats">
                         <div class="about-stat">
                             <h4>95%+</h4>
                             <p>Diagnostic Accuracy</p>
@@ -261,7 +374,7 @@
                             <h4>25+</h4>
                             <p>Disease Types</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="about-image">
                     <div class="tech-stack">
@@ -363,7 +476,7 @@
             <div class="upload-area">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <p>Drag and drop your medical image here or click to browse</p>
-                <input type="file" id="fileInput" accept="image/*,.dcm">
+                <input type="file" id="fileInput" accept="image/*,.dcm" style="display: none;">
                 <button class="btn-primary">Choose File</button>
             </div>
             <div class="upload-options">
@@ -388,26 +501,50 @@
                     Tuberculosis Detection
                 </label>
             </div>
-            <button class="btn-primary" onclick="analyzeImage()">Analyze Image</button>
+            <div class="analysis-buttons">
+                <button class="btn-primary" onclick="analyzeImage()">Analyze Image</button>
+                <button class="btn-secondary" onclick="analyzeTB()" id="tbBtn" style="display:none;">Analyze TB</button>
+                <button class="btn-secondary" onclick="analyzeSkinCancer()" id="skinBtn" style="display:none;">Analyze Skin Cancer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disease Info Modal -->
+    <div id="diseaseModal" class="modal">
+        <div class="modal-content disease-modal-content">
+            <span class="close" onclick="closeDiseaseModal()">&times;</span>
+            <div id="diseaseContent">
+                <!-- Disease content will be populated by JavaScript -->
+            </div>
         </div>
     </div>
 
     <!-- AI Chatbot -->
-    <div id="chatbot" class="chatbot" style="display: none;">
-        <div class="chatbot-header">
-            <i class="fas fa-robot"></i>
-            <span>AI Health Assistant</span>
-            <button class="chatbot-toggle" onclick="toggleChatbot()">&times;</button>
+<div id="chatbot" class="chatbot">
+    <div class="chatbot-header">
+        <div>
+            <i class="fas fa-robot"></i> <span>AI Health Assistant</span>
         </div>
-        <div class="chatbot-content">
-            <iframe
-                src="https://www.chatbase.co/chatbot-iframe/e9E0dvzzydXs1o23i7DCj"
-                width="100%"
-                style="height: 100%; min-height: 500px; border: none;"
-                frameborder="0">
-            </iframe>
+        <button class="chatbot-toggle" onclick="toggleChatbot()">&times;</button>
+    </div>
+    <div class="chatbot-content">
+        <div class="custom-chatbot">
+            <div class="chat-messages" id="chatMessages">
+                <div class="bot-message">
+                    <p>Hello! I'm your AI Health Assistant. I can help you with information about diseases, symptoms, and medical conditions. How can I assist you today?</p>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Ask about diseases, symptoms, or medical conditions..." onkeypress="handleChatKeyPress(event)">
+                <button onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
     </div>
+</div>
+
+
     <button class="chatbot-fab" onclick="toggleChatbot()">
         <i class="fas fa-comments"></i>
         <span class="chatbot-tooltip">AI Assistant</span>
