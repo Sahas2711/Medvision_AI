@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedVision AI - AI-Powered Medical Diagnostics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                <span>MedVision AI</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Diagnostics</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" class="btn-primary">Upload Scan</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>AI-Powered Diagnostics for X-rays, Retina, CT scans, and more</h1>
+                <p>Upload medical images for instant AI-based diagnosis. Detect TB, cancer, fractures, and retinal diseases with 95%+ accuracy.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="openUploadModal()">
+                        <i class="fas fa-upload"></i> Upload Medical Image
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-play"></i> Watch Demo
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">50K+</span>
+                        <span class="stat-label">Patients Served</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">25+</span>
+                        <span class="stat-label">Diseases Detected</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card">
+                    <i class="fas fa-x-ray"></i>
+                    <span>X-ray Analysis</span>
+                </div>
+                <div class="floating-card">
+                    <i class="fas fa-eye"></i>
+                    <span>Retinal Scan</span>
+                </div>
+                <div class="floating-card">
+                    <i class="fas fa-brain"></i>
+                    <span>CT/MRI Analysis</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>AI Diagnostic Modules</h2>
+            <p class="section-subtitle">Advanced AI technology for accurate medical image analysis</p>
+            
+            <div class="features-grid">
+                <div class="feature-card" data-category="alzheimer">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Alzheimer Detection</h3>
+                    <p>Early detection of Alzheimer's disease using advanced brain imaging analysis.</p>
+                    <ul>
+                        <li>Brain MRI Analysis</li>
+                        <li>Cognitive Decline Assessment</li>
+                        <li>Early Stage Detection</li>
+                        <li>Risk Factor Analysis</li>
+                    </ul>
+                    <button class="btn-feature">Analyze Brain Scan</button>
+                </div>
+
+                <div class="feature-card" data-category="skin-cancer">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Skin Cancer Detection</h3>
+                    <p>Accurate identification of melanoma and other skin cancers from dermoscopy images.</p>
+                    <ul>
+                        <li>Melanoma Detection</li>
+                        <li>Basal Cell Carcinoma</li>
+                        <li>Squamous Cell Carcinoma</li>
+                        <li>Benign vs Malignant</li>
+                    </ul>
+                    <button class="btn-feature">Analyze Skin Lesion</button>
+                </div>
+
+                <div class="feature-card" data-category="diabetic-retinopathy">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Diabetic Retinopathy</h3>
+                    <p>Comprehensive retinal analysis for diabetic retinopathy screening and grading.</p>
+                    <ul>
+                        <li>DR Severity Grading</li>
+                        <li>Microaneurysm Detection</li>
+                        <li>Hemorrhage Analysis</li>
+                        <li>Macular Edema Assessment</li>
+                    </ul>
+                    <button class="btn-feature">Analyze Retina</button>
+                </div>
+
+                <div class="feature-card" data-category="bone-fracture">
+                    <div class="feature-icon">
+                        <i class="fas fa-bone"></i>
+                    </div>
+                    <h3>Bone Fracture Detection</h3>
+                    <p>Precise identification and classification of bone fractures in X-ray images.</p>
+                    <ul>
+                        <li>Fracture Identification</li>
+                        <li>Fracture Type Classification</li>
+                        <li>Severity Assessment</li>
+                        <li>Healing Progress Tracking</li>
+                    </ul>
+                    <button class="btn-feature">Analyze X-ray</button>
+                </div>
+
+                <div class="feature-card" data-category="tuberculosis">
+                    <div class="feature-icon">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h3>Tuberculosis Detection</h3>
+                    <p>Advanced chest X-ray analysis for tuberculosis screening and diagnosis.</p>
+                    <ul>
+                        <li>TB Lesion Detection</li>
+                        <li>Cavitation Analysis</li>
+                        <li>Pleural Effusion</li>
+                        <li>Treatment Monitoring</li>
+                    </ul>
+                    <button class="btn-feature">Analyze Chest X-ray</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="dashboard-preview">
+        <div class="container">
+            <div class="dashboard-content">
+                <div class="dashboard-text">
+                    <h2>Secure Health Dashboard</h2>
+                    <p>Track your medical history, view AI predictions, and manage your health records securely.</p>
+                    <div class="dashboard-features">
+                        <div class="dashboard-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>HIPAA Compliant Security</span>
+                        </div>
+                        <div class="dashboard-feature">
+                            <i class="fas fa-history"></i>
+                            <span>Complete Medical History</span>
+                        </div>
+                        <div class="dashboard-feature">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Progress Tracking</span>
+                        </div>
+                        <div class="dashboard-feature">
+                            <i class="fas fa-bell"></i>
+                            <span>Smart Notifications</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary">Access Dashboard</button>
+                </div>
+                <div class="dashboard-mockup">
+                    <div class="mockup-screen">
+                        <div class="mockup-header">
+                            <div class="mockup-tabs">
+                                <span class="active">Overview</span>
+                                <span>Reports</span>
+                                <span>History</span>
+                            </div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-card">
+                                <h4>Recent Analysis</h4>
+                                <div class="analysis-item">
+                                    <i class="fas fa-lungs"></i>
+                                    <span>Chest X-ray - Normal</span>
+                                    <span class="status normal">✓</span>
+                                </div>
+                                <div class="analysis-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Retinal Scan - Monitoring</span>
+                                    <span class="status warning">!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Section -->
+    <section class="emergency">
+        <div class="container">
+            <div class="emergency-content">
+                <div class="emergency-icon">
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <div class="emergency-text">
+                    <h3>Emergency Teleconsultation</h3>
+                    <p>Connect with nearby doctors and hospitals instantly for urgent medical consultations.</p>
+                </div>
+                <button class="btn-emergency">
+                    <i class="fas fa-phone"></i> Emergency Consult
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About MedVision AI</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Revolutionizing Healthcare with AI</h3>
+                    <p>MedVision AI leverages cutting-edge artificial intelligence to provide instant, accurate medical image analysis. Our mission is to make advanced diagnostic tools accessible to healthcare providers worldwide.</p>
+                    <div class="about-stats">
+                        <div class="about-stat">
+                            <h4>95%+</h4>
+                            <p>Diagnostic Accuracy</p>
+                        </div>
+                        <div class="about-stat">
+                            <h4>50K+</h4>
+                            <p>Images Analyzed</p>
+                        </div>
+                        <div class="about-stat">
+                            <h4>25+</h4>
+                            <p>Disease Types</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="tech-stack">
+                        <div class="tech-item">Deep Learning</div>
+                        <div class="tech-item">Computer Vision</div>
+                        <div class="tech-item">Neural Networks</div>
+                        <div class="tech-item">Medical AI</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact & Support</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Get in Touch</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>support@medvisionai.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 (555) 123-4567</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Healthcare Ave, Medical District</span>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <select>
+                        <option>General Inquiry</option>
+                        <option>Technical Support</option>
+                        <option>Teleconsultation</option>
+                        <option>Partnership</option>
+                    </select>
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>MedVision AI</span>
+                    </div>
+                    <p>AI-powered medical diagnostics for better healthcare outcomes.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">X-ray Analysis</a></li>
+                        <li><a href="#">Retinal Scanning</a></li>
+                        <li><a href="#">CT/MRI Analysis</a></li>
+                        <li><a href="#">Teleconsultation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Knowledge Base</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MedVision AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Upload Medical Image</h3>
+            <div class="upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag and drop your medical image here or click to browse</p>
+                <input type="file" id="fileInput" accept="image/*,.dcm">
+                <button class="btn-primary">Choose File</button>
+            </div>
+            <div class="upload-options">
+                <label>
+                    <input type="radio" name="analysis" value="alzheimer" checked>
+                    Alzheimer Detection
+                </label>
+                <label>
+                    <input type="radio" name="analysis" value="skin-cancer">
+                    Skin Cancer Detection
+                </label>
+                <label>
+                    <input type="radio" name="analysis" value="diabetic-retinopathy">
+                    Diabetic Retinopathy
+                </label>
+                <label>
+                    <input type="radio" name="analysis" value="bone-fracture">
+                    Bone Fracture Detection
+                </label>
+                <label>
+                    <input type="radio" name="analysis" value="tuberculosis">
+                    Tuberculosis Detection
+                </label>
+            </div>
+            <button class="btn-primary" onclick="analyzeImage()">Analyze Image</button>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div id="chatbot" class="chatbot" style="display: none;">
+        <div class="chatbot-header">
+            <i class="fas fa-robot"></i>
+            <span>AI Health Assistant</span>
+            <button class="chatbot-toggle" onclick="toggleChatbot()">&times;</button>
+        </div>
+        <div class="chatbot-content">
+            <iframe
+                src="https://www.chatbase.co/chatbot-iframe/e9E0dvzzydXs1o23i7DCj"
+                width="100%"
+                style="height: 100%; min-height: 500px; border: none;"
+                frameborder="0">
+            </iframe>
+        </div>
+    </div>
+    <button class="chatbot-fab" onclick="toggleChatbot()">
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-tooltip">AI Assistant</span>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
