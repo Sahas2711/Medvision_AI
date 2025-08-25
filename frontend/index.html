@@ -16,15 +16,16 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <i class="fas fa-brain"></i>
-                <span>MedVision AI</span>
+                <span>Aarogya Drishti</span>
             </div>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#features">Diagnostics</a></li>
                 <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="doctor-finder.html">Find Doctors</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="#" class="btn-primary">Upload Scan</a></li>
+                <li><a href="doctor-finder.html" class="btn-primary">Login</a></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -38,14 +39,13 @@
     <section id="home" class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h1>AI-Powered Diagnostics for X-rays, Retina, CT scans, and more</h1>
-                <p>Upload medical images for instant AI-based diagnosis. Detect TB, cancer, fractures, and retinal diseases with 95%+ accuracy.</p>
+                <h1>Empowering healthcare with AI – clear vision, better decisions.</h1>
                 <div class="hero-buttons">
                     <button class="btn-primary" onclick="openUploadModal()">
                         <i class="fas fa-upload"></i> Upload Medical Image
                     </button>
-                    <button class="btn-secondary">
-                        <i class="fas fa-play"></i> Watch Demo
+                    <button class="btn-secondary" onclick="window.location.href='doctor-finder.html'">
+                        <i class="fas fa-user-md"></i> Find Doctors
                     </button>
                 </div>
                 <!-- <div class="hero-stats">
@@ -64,17 +64,31 @@
                 </div> -->
             </div>
             <div class="hero-image">
-                <div class="floating-card">
-                    <i class="fas fa-x-ray"></i>
-                    <span>X-ray Analysis</span>
-                </div>
-                <div class="floating-card">
-                    <i class="fas fa-eye"></i>
-                    <span>Retinal Scan</span>
-                </div>
-                <div class="floating-card">
-                    <i class="fas fa-brain"></i>
-                    <span>CT/MRI Analysis</span>
+                <div class="card-container">
+                    <div class="floating-card">
+                        <i class="fas fa-brain"></i>
+                        <span>Alzheimer Detection</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-user-md"></i>
+                        <span>Skin Cancer Detection</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-eye"></i>
+                        <span>Diabetic Retinopathy</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-bone"></i>
+                        <span>Bone Fracture Detection</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-lungs"></i>
+                        <span>Tuberculosis Detection</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-procedures"></i>
+                        <span>Liver Cirrhosis Detection</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,6 +175,21 @@
                     </ul>
                     <button class="btn-feature">Analyze Chest X-ray</button>
                 </div>
+
+                <div class="feature-card" data-category="liver-cirrhosis">
+                    <div class="feature-icon">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <h3>Liver Cirrhosis Detection</h3>
+                    <p>AI-powered analysis of liver imaging for cirrhosis detection and staging.</p>
+                    <ul>
+                        <li>Liver Fibrosis Assessment</li>
+                        <li>Cirrhosis Stage Detection</li>
+                        <li>Portal Hypertension Signs</li>
+                        <li>Disease Progression Monitoring</li>
+                    </ul>
+                    <button class="btn-feature">Analyze Liver Scan</button>
+                </div>
             </div>
         </div>
     </section>
@@ -222,6 +251,43 @@
         </div>
     </section>
 
+    <!-- Quick Access Section -->
+    <section class="quick-access">
+        <div class="container">
+            <h2>Quick Access</h2>
+            <div class="quick-access-grid">
+                <div class="quick-card" onclick="openUploadModal()">
+                    <div class="quick-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h3>Upload & Analyze</h3>
+                    <p>Upload medical images for instant AI diagnosis</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='doctor-finder.html'">
+                    <div class="quick-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Find Doctors</h3>
+                    <p>Connect with specialist doctors near you</p>
+                </div>
+                <div class="quick-card" onclick="toggleChatbot()">
+                    <div class="quick-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Assistant</h3>
+                    <p>Get instant health information and guidance</p>
+                </div>
+                <div class="quick-card" onclick="window.location.href='#dashboard'">
+                    <div class="quick-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Health Dashboard</h3>
+                    <p>Track your medical history and reports</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Emergency Section -->
     <section class="emergency">
         <div class="container">
@@ -233,8 +299,8 @@
                     <h3>Emergency Teleconsultation</h3>
                     <p>Connect with nearby doctors and hospitals instantly for urgent medical consultations.</p>
                 </div>
-                <button class="btn-emergency">
-                    <i class="fas fa-phone"></i> Emergency Consult
+                <button class="btn-emergency" onclick="window.open('tel:112', '_self')">
+                    <i class="fas fa-phone"></i> Call 112
                 </button>
             </div>
         </div>
@@ -278,6 +344,13 @@
                 </div>
                 <h3>Tuberculosis</h3>
                 <p>Symptoms, transmission, and treatment details</p>
+            </div>
+            <div class="disease-card" onclick="openDiseaseInfo('liver-cirrhosis')">
+                <div class="disease-icon">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <h3>Liver Cirrhosis</h3>
+                <p>Liver disease progression and management</p>
             </div>
         </div>
     </div>
@@ -349,6 +422,17 @@
                         <li>BCG vaccination if recommended</li>
                     </ul>
                 </div>
+                <div class="precaution-card">
+                    <h3><i class="fas fa-procedures"></i> Liver Cirrhosis Prevention</h3>
+                    <ul>
+                        <li>Limit alcohol consumption</li>
+                        <li>Maintain healthy weight</li>
+                        <li>Get vaccinated for hepatitis A & B</li>
+                        <li>Avoid sharing needles</li>
+                        <li>Practice safe sex</li>
+                        <li>Regular liver function tests</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
@@ -379,7 +463,7 @@
                 <div class="about-image">
                     <div class="tech-stack">
                         <div class="tech-item">Deep Learning</div>
-                        <div class="tech-item">Computer Vision</div>
+                        <div class="tech-item">TensorFlow</div>
                         <div class="tech-item">Neural Networks</div>
                         <div class="tech-item">Medical AI</div>
                     </div>
@@ -401,11 +485,11 @@
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <span>+1 (555) 123-4567</span>
+                        <span>+91 (555) 123-4567</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>123 Healthcare Ave, Medical District</span>
+                        <span>MIT AOE, Pune</span>
                     </div>
                 </div>
                 <form class="contact-form">
@@ -431,9 +515,9 @@
                 <div class="footer-section">
                     <div class="footer-logo">
                         <i class="fas fa-brain"></i>
-                        <span>MedVision AI</span>
+                        <span>Aarogya Drishti</span>
                     </div>
-                    <p>AI-powered medical diagnostics for better healthcare outcomes.</p>
+                    <p>Empowering healthcare with AI – clear vision, better decisions.</p>
                 </div>
                 <div class="footer-section">
                     <h4>Services</h4>
@@ -463,7 +547,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 MedVision AI. All rights reserved.</p>
+                <p>&copy; 2025 Aarogya Drishti. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -500,11 +584,16 @@
                     <input type="radio" name="analysis" value="tuberculosis">
                     Tuberculosis Detection
                 </label>
+                <label>
+                    <input type="radio" name="analysis" value="liver-cirrhosis">
+                    Liver Cirrhosis Detection
+                </label>
             </div>
             <div class="analysis-buttons">
                 <button class="btn-primary" onclick="analyzeImage()">Analyze Image</button>
                 <button class="btn-secondary" onclick="analyzeTB()" id="tbBtn" style="display:none;">Analyze TB</button>
                 <button class="btn-secondary" onclick="analyzeSkinCancer()" id="skinBtn" style="display:none;">Analyze Skin Cancer</button>
+                <button class="btn-secondary" onclick="analyzeLiverCirrhosis()" id="liverBtn" style="display:none;">Analyze Liver Cirrhosis</button>
             </div>
         </div>
     </div>

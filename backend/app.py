@@ -29,6 +29,7 @@ tb_model = load_model('../frontend/best_tb_mobilenetv2.h5', 'TB')
 skin_model = load_model('../frontend/skin_cancer_model.h5', 'Skin cancer')
 alzheimer_model = load_model('../frontend/best_alzheimer_model.h5', 'Alzheimer')
 bone_model = load_model('../frontend/bone_fracture_model.h5', 'Bone fracture')
+liver_model = load_model('../frontend/Liver_cirrhosis.keras', 'Liver cirrhosis')
 
 # ==================================
 # Prediction Type Mapping
@@ -78,6 +79,15 @@ predict_type_map = {
             'Fracture Detected': ['Fracture detected', 'Orthopedic consultation required', 'Immediate medical attention needed']
         }.get(p, ['Consult healthcare provider']),
         'classes': ['No Fracture', 'Fracture Detected']
+    },
+    'liver': {
+        'model': liver_model,
+        'target_size': (224, 224),
+        'get_recommendations': lambda p: {
+            'Normal': ['No liver cirrhosis detected', 'Continue healthy lifestyle', 'Regular monitoring recommended'],
+            'Cirrhosis Detected': ['Liver cirrhosis detected', 'Hepatologist consultation required', 'Immediate medical evaluation needed']
+        }.get(p, ['Consult healthcare provider']),
+        'classes': ['Normal', 'Cirrhosis Detected']
     }
 }
 
@@ -214,14 +224,16 @@ def unified_predict(predict_type):
                 return jsonify({'success': False, 'error': 'No predictions made'}), 500
             predicted_idx = np.argmax(predictions[0])
             confidence = float(predictions[0][predicted_idx])
-            predicted_class = classes[predicted_idx]
-            all_predictions = {classes[i]: f"{float(p) * 100:.1f}%" for i, p in enumerate(predictions[0])}
+            predicted_class = classes[predicted_idx] if predicted_idx < len(classes) else classes[0]
+            all_predictions = {classes[i]: f"{float(p) * 100:.1f}%" for i, p in enumerate(predictions[0]) if i < len(classes)}
         else:
             # Binary classification - handle different shapes
-            if len(predictions.shape) > 1:
+            if len(predictions.shape) > 1 and predictions.shape[1] > 0:
                 probability = float(predictions[0][0])
-            else:
+            elif len(predictions.shape) > 0:
                 probability = float(predictions[0])
+            else:
+                probability = float(predictions)
             
             # Ensure probability is between 0 and 1
             probability = max(0.0, min(1.0, probability))
@@ -230,7 +242,7 @@ def unified_predict(predict_type):
                 predicted_class = classes[1] if len(classes) > 1 else classes[0]
                 confidence = probability
             else:
-                predicted_class = classes[0]
+                predicted_class = classes[0] if len(classes) > 0 else 'Unknown'
                 confidence = 1 - probability
             
             if len(classes) > 1:
@@ -239,7 +251,7 @@ def unified_predict(predict_type):
                     classes[1]: f"{probability * 100:.1f}%"
                 }
             else:
-                all_predictions = {classes[0]: f"{confidence * 100:.1f}%"}
+                all_predictions = {classes[0]: f"{confidence * 100:.1f}%"} if len(classes) > 0 else {'Unknown': '0.0%'}
 
         recommendations = get_recs(predicted_class)
         
@@ -313,7 +325,8 @@ def health_check():
         'tb': tb_model is not None,
         'skin': skin_model is not None,
         'alzheimer': alzheimer_model is not None,
-        'bone': bone_model is not None
+        'bone': bone_model is not None,
+        'liver': liver_model is not None
     }
     return jsonify({
         'status': 'healthy',

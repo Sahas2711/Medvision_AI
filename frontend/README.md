@@ -9,10 +9,11 @@ This project integrates multiple AI models for medical image analysis with a com
 - **Retina Model**: `best_retina_model.h5` - Diabetic retinopathy detection
 - **TB Model**: `best_tb_mobilenetv2.h5` - Tuberculosis detection with 3-image output
 - **Skin Cancer Model**: `skin_cancer_model.h5` - Skin cancer classification
+- **Liver Cirrhosis Model**: `Liver_cirrhosis.keras` - Liver cirrhosis detection
 
 ### 2. Frontend Features
-- **Disease Information Cards**: Interactive cards for each disease type
-- **Separate Analysis Buttons**: Dedicated buttons for TB and Skin Cancer models
+- **Disease Information Cards**: Interactive cards for each disease type (6 diseases)
+- **Separate Analysis Buttons**: Dedicated buttons for TB, Skin Cancer, and Liver Cirrhosis models
 - **Multi-Image Display**: TB analysis shows 3 generated analysis images
 - **Disease Detail Pages**: Individual HTML pages for each disease with comprehensive information
 - **Responsive Design**: Mobile-friendly interface
@@ -21,6 +22,7 @@ This project integrates multiple AI models for medical image analysis with a com
 - `POST /predict/retina` - Diabetic retinopathy analysis
 - `POST /predict/tb` - Tuberculosis analysis (returns 3 images)
 - `POST /predict/skin` - Skin cancer analysis
+- `POST /predict/liver` - Liver cirrhosis analysis
 - `GET /health` - Health check for all models
 
 ### 4. Disease Information Pages
@@ -29,6 +31,7 @@ This project integrates multiple AI models for medical image analysis with a com
 - `diabetic-retinopathy-info.html` - Diabetic retinopathy information
 - `bone-fracture-info.html` - Bone fracture information
 - `tuberculosis-info.html` - Tuberculosis information
+- `liver-cirrhosis-info.html` - Liver cirrhosis information
 
 ## File Structure
 ```
@@ -44,6 +47,7 @@ frontend/
 ├── best_retina_model.h5            # AI models
 ├── best_tb_mobilenetv2.h5
 ├── skin_cancer_model.h5
+├── Liver_cirrhosis.keras
 └── download.png
 
 backend/
@@ -66,11 +70,13 @@ python app.py
 3. **Model Selection**: Choose specific analysis type
 4. **TB Analysis**: Use "Analyze TB" button for tuberculosis-specific analysis with 3-image output
 5. **Skin Cancer Analysis**: Use "Analyze Skin Cancer" button for skin cancer-specific analysis
+6. **Liver Cirrhosis Analysis**: Use "Analyze Liver Cirrhosis" button for liver-specific analysis
 
 ### Button Visibility Logic
 - **General Analysis**: Always visible for all disease types
 - **TB Button**: Only visible when "Tuberculosis Detection" is selected
 - **Skin Cancer Button**: Only visible when "Skin Cancer Detection" is selected
+- **Liver Cirrhosis Button**: Only visible when "Liver Cirrhosis Detection" is selected
 
 ## Technical Implementation
 
@@ -83,6 +89,12 @@ python app.py
 - Binary classification (Benign/Malignant)
 - Skin cancer-specific recommendations
 - Dermatologist consultation information
+
+### Liver Cirrhosis Model Integration
+- Uses new Keras format (.keras file)
+- Binary classification (Normal/Cirrhosis Detected)
+- Liver-specific medical recommendations
+- Hepatologist consultation information
 
 ### Disease Navigation
 - Cards navigate to dedicated HTML pages
@@ -98,6 +110,7 @@ python app.py
 
 ## Notes
 - Maintains existing retina model functionality
-- All models use 224x224 input size
+- All models use 224x224 input size (liver model supports new Keras format)
 - Demo images generated for TB analysis when backend unavailable
 - Responsive design works on mobile devices
+- Liver cirrhosis model uses the new Keras format instead of legacy .h5 format

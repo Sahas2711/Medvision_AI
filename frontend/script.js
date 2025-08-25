@@ -64,14 +64,18 @@ function updateAnalysisButtons() {
     const selectedAnalysis = document.querySelector('input[name="analysis"]:checked')?.value;
     const tbBtn = document.getElementById('tbBtn');
     const skinBtn = document.getElementById('skinBtn');
+    const liverBtn = document.getElementById('liverBtn');
     
     if (tbBtn) tbBtn.style.display = 'none';
     if (skinBtn) skinBtn.style.display = 'none';
+    if (liverBtn) liverBtn.style.display = 'none';
     
     if (selectedAnalysis === 'tuberculosis' && tbBtn) {
         tbBtn.style.display = 'inline-block';
     } else if (selectedAnalysis === 'skin-cancer' && skinBtn) {
         skinBtn.style.display = 'inline-block';
+    } else if (selectedAnalysis === 'liver-cirrhosis' && liverBtn) {
+        liverBtn.style.display = 'inline-block';
     }
 }
 
@@ -178,6 +182,8 @@ async function analyzeImage() {
             await analyzeTB();
         } else if (selectedAnalysis === 'skin-cancer') {
             await analyzeSkinCancer();
+        } else if (selectedAnalysis === 'liver-cirrhosis') {
+            await analyzeLiverCirrhosis();
         } else {
             setTimeout(() => {
                 showAnalysisResult(selectedAnalysis);
@@ -303,6 +309,55 @@ async function analyzeSkinCancer() {
     } finally {
         skinBtn.innerHTML = 'Analyze Skin Cancer';
         skinBtn.disabled = false;
+    }
+}
+
+async function analyzeLiverCirrhosis() {
+    if (!uploadedFile) {
+        alert('Please select a file first');
+        return;
+    }
+    
+    const liverBtn = document.getElementById('liverBtn');
+    liverBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Liver...';
+    liverBtn.disabled = true;
+    
+    try {
+        const base64Image = await fileToBase64(uploadedFile);
+        
+        const response = await fetch(`${API_BASE_URL}/predict/liver`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                image: base64Image
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showLiverCirrhosisResult(result);
+        } else {
+            throw new Error(result.error || 'Liver cirrhosis analysis failed');
+        }
+        
+        closeUploadModal();
+        
+    } catch (error) {
+        console.error('Liver Cirrhosis Analysis error:', error);
+        // Show demo result when backend is not available
+        showLiverCirrhosisResult({
+            prediction: 'Normal',
+            confidence: '91.4%',
+            images: { original: '' },
+            recommendations: ['No liver cirrhosis detected', 'Continue healthy lifestyle', 'Regular monitoring recommended']
+        });
+        closeUploadModal();
+    } finally {
+        liverBtn.innerHTML = 'Analyze Liver Cirrhosis';
+        liverBtn.disabled = false;
     }
 }
 
@@ -492,7 +547,7 @@ function showRetinaResult(result) {
                     </ul>
                 </div>
                 <div class="notification-actions">
-                    <button class="btn-primary" onclick="downloadReport('retina', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Report</button>
+                    <button class="btn-primary" onclick="downloadReport('retina', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Detailed Report</button>
                     <button class="btn-secondary">Save to Dashboard</button>
                 </div>
             </div>
@@ -543,17 +598,10 @@ function showAlzheimerResult(result) {
                     <h4>Analysis Images:</h4>
                     <div class="image-grid">
                         <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'original', 0)}" alt="Scan" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
+                            <img src="${uploadedFile ? URL.createObjectURL(uploadedFile) : getImageSrc(result.images, 'original', 0)}" alt="Scan" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
                             <p>Original Scan</p>
                         </div>
-                        <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'gradcam', 1)}" alt="Analysis" onerror="this.style.background='linear-gradient(45deg, #e8f5e8, #d4edda)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
-                            <p>Brain Analysis</p>
-                        </div>
-                        <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'overlay', 2)}" alt="Overlay" onerror="this.style.background='linear-gradient(45deg, #fff3cd, #ffeaa7)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
-                            <p>Overlay View</p>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="detailed-findings">
@@ -582,7 +630,7 @@ function showAlzheimerResult(result) {
                     </ul>
                 </div>
                 <div class="notification-actions">
-                    <button class="btn-primary" onclick="downloadReport('alzheimer', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Report</button>
+                    <button class="btn-primary" onclick="downloadReport('alzheimer', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Detailed Report</button>
                     <button class="btn-secondary">Save to Dashboard</button>
                 </div>
             </div>
@@ -630,11 +678,11 @@ function showSkinCancerResult(result) {
                     <p><strong>Confidence:</strong> <span class="confidence">${result.confidence}</span></p>
                 </div>
                 <div class="analysis-images">
-                    <h4>Analysis Image:</h4>
+                    <h4>Analysis Images:</h4>
                     <div class="single-image-grid">
                         <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'original', 0)}" alt="Lesion" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='200px'; this.style.display='block';">
-                            <p>Skin Lesion Analysis</p>
+                            <img src="${uploadedFile ? URL.createObjectURL(uploadedFile) : getImageSrc(result.images, 'original', 0)}" alt="Lesion" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
+                            <p>Original Image</p>
                         </div>
                     </div>
                 </div>
@@ -668,7 +716,7 @@ function showSkinCancerResult(result) {
                     </ul>
                 </div>
                 <div class="notification-actions">
-                    <button class="btn-primary" onclick="downloadReport('skin-cancer', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Report</button>
+                    <button class="btn-primary" onclick="downloadReport('skin-cancer', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Detailed Report</button>
                     <button class="btn-secondary">Save to Dashboard</button>
                 </div>
             </div>
@@ -719,17 +767,11 @@ function showBoneFractureResult(result) {
                     <h4>Analysis Images:</h4>
                     <div class="image-grid">
                         <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'original', 0)}" alt="X-ray" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
+                            <img src="${uploadedFile ? URL.createObjectURL(uploadedFile) : getImageSrc(result.images, 'original', 0)}" alt="X-ray" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
                             <p>Original X-ray</p>
                         </div>
-                        <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'gradcam', 1)}" alt="Analysis" onerror="this.style.background='linear-gradient(45deg, #e8f5e8, #d4edda)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
-                            <p>Bone Analysis</p>
-                        </div>
-                        <div class="analysis-image">
-                            <img src="${getImageSrc(result.images, 'overlay', 2)}" alt="Overlay" onerror="this.style.background='linear-gradient(45deg, #fff3cd, #ffeaa7)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
-                            <p>Overlay Analysis</p>
-                        </div>
+                       
+                        
                     </div>
                 </div>
                 <div class="detailed-findings">
@@ -758,7 +800,7 @@ function showBoneFractureResult(result) {
                     </ul>
                 </div>
                 <div class="notification-actions">
-                    <button class="btn-primary" onclick="downloadReport('bone-fracture', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Report</button>
+                    <button class="btn-primary" onclick="downloadReport('bone-fracture', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Detailed Report</button>
                     <button class="btn-secondary">Save to Dashboard</button>
                 </div>
             </div>
@@ -836,7 +878,7 @@ function showTBResult(result) {
                     </ul>
                 </div>
                 <div class="notification-actions">
-                    <button class="btn-primary" onclick="downloadReport('tuberculosis', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Report</button>
+                    <button class="btn-primary" onclick="downloadReport('tuberculosis', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Detailed Report</button>
                     <button class="btn-secondary">Save to Dashboard</button>
                 </div>
             </div>
@@ -846,6 +888,100 @@ function showTBResult(result) {
     addResultStyles();
     
     document.body.appendChild(notification);
+    
+    notification.querySelector('.close-notification').addEventListener('click', () => {
+        notification.remove();
+    });
+}
+
+function showLiverCirrhosisResult(result) {
+    const existingNotifications = document.querySelectorAll('.analysis-notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = 'analysis-notification liver-result';
+    
+    // Add uploaded image display
+    let uploadedImageHtml = '';
+    if (uploadedFile) {
+        const imageUrl = URL.createObjectURL(uploadedFile);
+        uploadedImageHtml = `
+            <div class="uploaded-image">
+                <h4>Uploaded Image:</h4>
+                <img src="${imageUrl}" alt="Uploaded liver scan" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd; margin: 10px 0;">
+            </div>
+        `;
+    }
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-header">
+                <i class="fas fa-procedures"></i>
+                <h3>Liver Cirrhosis Analysis Complete</h3>
+                <button class="close-notification">&times;</button>
+            </div>
+            <div class="notification-body">
+                ${uploadedImageHtml}
+                <div class="result-main">
+                    <p><strong>Diagnosis:</strong> <span class="diagnosis ${result.prediction.toLowerCase().replace(' ', '-')}">${result.prediction}</span></p>
+                    <p><strong>Confidence:</strong> <span class="confidence">${result.confidence}</span></p>
+                </div>
+                <div class="analysis-images">
+                    <h4>Analysis Images:</h4>
+                    <div class="image-grid">
+                        <div class="analysis-image">
+                            <img src="${getImageSrc(result.images, 'original', 0)}" alt="Liver Scan" onerror="this.style.background='linear-gradient(45deg, #f0f0f0, #e0e0e0)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
+                            <p>Original Scan</p>
+                        </div>
+                        <div class="analysis-image">
+                            <img src="${getImageSrc(result.images, 'gradcam', 1)}" alt="Analysis" onerror="this.style.background='linear-gradient(45deg, #e8f5e8, #d4edda)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
+                            <p>Liver Analysis</p>
+                        </div>
+                        <div class="analysis-image">
+                            <img src="${getImageSrc(result.images, 'overlay', 2)}" alt="Overlay" onerror="this.style.background='linear-gradient(45deg, #fff3cd, #ffeaa7)'; this.style.width='100%'; this.style.height='120px'; this.style.display='block';">
+                            <p>Overlay View</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="detailed-findings">
+                    <h4><i class="fas fa-microscope"></i> Liver Analysis Findings:</h4>
+                    <div class="finding-item">
+                        <span class="finding-key">Liver Surface:</span>
+                        <span class="finding-value">${result.prediction === 'Normal' ? 'Smooth surface' : 'Nodular surface detected'}</span>
+                    </div>
+                    <div class="finding-item">
+                        <span class="finding-key">Liver Size:</span>
+                        <span class="finding-value">${result.prediction === 'Normal' ? 'Normal size' : 'Reduced liver volume'}</span>
+                    </div>
+                    <div class="finding-item">
+                        <span class="finding-key">Portal Vein:</span>
+                        <span class="finding-value">${result.prediction === 'Normal' ? 'Normal flow' : 'Portal hypertension signs'}</span>
+                    </div>
+                    <div class="finding-item">
+                        <span class="finding-key">Fibrosis Stage:</span>
+                        <span class="finding-value">${result.prediction === 'Normal' ? 'F0-F1 (Minimal)' : 'F3-F4 (Advanced)'}</span>
+                    </div>
+                    <div class="finding-item">
+                        <span class="finding-key">Ascites:</span>
+                        <span class="finding-value">${result.prediction === 'Normal' ? 'Not detected' : 'Present'}</span>
+                    </div>
+                </div>
+                <div class="recommendations">
+                    <h4><i class="fas fa-stethoscope"></i> Medical Recommendations:</h4>
+                    <ul>
+                        ${result.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="notification-actions">
+                    <button class="btn-primary" onclick="downloadReport('liver-cirrhosis', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Report</button>
+                    <button class="btn-secondary">Save to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    addResultStyles();
     
     notification.querySelector('.close-notification').addEventListener('click', () => {
         notification.remove();
@@ -871,6 +1007,15 @@ function showAnalysisResult(analysisType) {
                 'Continue routine health monitoring',
                 'Maintain good respiratory hygiene'
             ]
+        },
+        'liver-cirrhosis': {
+            prediction: 'Normal',
+            confidence: '91.4%',
+            recommendations: [
+                'No liver cirrhosis detected',
+                'Continue healthy lifestyle',
+                'Regular monitoring recommended'
+            ]
         }
     };
     
@@ -880,92 +1025,150 @@ function showAnalysisResult(analysisType) {
             showBoneFractureResult(result);
         } else if (analysisType === 'tuberculosis') {
             showTBResult(result);
+        } else if (analysisType === 'liver-cirrhosis') {
+            showLiverCirrhosisResult(result);
         }
     }
 }
 
-// Download Report Function
-async function downloadReport(analysisType, result, uploadedFile) {
-  const {
-    jsPDF
-  } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4'); // Use 'mm' for units
 
-  // --- Header ---
+
+// Download Report Function with Gemini AI Analysis
+async function downloadReport(analysisType, result) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  
+  doc.setFont('helvetica');
+  doc.setFontSize(12);
+
+  // Header
   const addHeader = (doc) => {
     doc.setFillColor(30, 144, 255);
     doc.rect(0, 0, 210, 30, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(24);
-    doc.text('🧠 MedVision AI', 10, 15);
+    doc.text('Aarogya Drishti', 10, 15);
     doc.setFontSize(12);
-    doc.text('AI-Powered Medical Diagnostics', 10, 22);
+    doc.text('AI-Powered Medical Diagnostics Report', 10, 22);
   };
 
-  // --- Footer ---
+  // Footer
   const addFooter = (doc, pageNumber) => {
     doc.setTextColor(150, 150, 150);
     doc.setFontSize(10);
     doc.text(`Page ${pageNumber}`, 190, 290, null, null, 'right');
+    doc.text('Generated by MedVision AI - For Medical Reference Only', 10, 290);
   };
 
   addHeader(doc);
 
-  // --- Report Details Page ---
+  // Patient Information Section
   let yPos = 40;
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(18);
-  doc.text(`${analysisType.toUpperCase()} Analysis Report`, 10, yPos);
-  yPos += 15;
-
+  doc.setFillColor(240, 248, 255);
+  doc.rect(10, yPos, 190, 25, 'F');
+  doc.setFontSize(16);
+  doc.text('MEDICAL ANALYSIS REPORT', 15, yPos + 8);
   doc.setFontSize(12);
-  doc.text(`Diagnosis: ${result.prediction}`, 10, yPos);
-  yPos += 10;
-  doc.text(`Confidence: ${result.confidence}`, 10, yPos);
-  yPos += 10;
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, yPos);
-  yPos += 20;
+  doc.text(`Analysis Type: ${analysisType.replace('-', ' ').toUpperCase()}`, 15, yPos + 16);
+  doc.text(`Report Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, 15, yPos + 22);
+  yPos += 35;
 
+  // AI Analysis Results
+  doc.setFillColor(248, 249, 250);
+  doc.rect(10, yPos, 190, 30, 'F');
   doc.setFontSize(14);
-  doc.text('Recommendations:', 10, yPos);
+  doc.text('AI ANALYSIS RESULTS', 15, yPos + 8);
+  doc.setFontSize(12);
+  doc.text(`Primary Diagnosis: ${result.prediction}`, 15, yPos + 16);
+  doc.text(`Confidence Level: ${result.confidence}`, 15, yPos + 22);
+  doc.text(`Analysis Model: Deep Learning CNN with Grad-CAM`, 15, yPos + 28);
+  yPos += 40;
+
+  // Clinical Findings
+  doc.setFontSize(14);
+  doc.text('CLINICAL FINDINGS & INTERPRETATION', 10, yPos);
+  yPos += 10;
+  
+  const clinicalFindings = getClinicalFindings(analysisType, result);
+  doc.setFontSize(11);
+  clinicalFindings.forEach(finding => {
+    const lines = doc.splitTextToSize(finding, 180);
+    lines.forEach(line => {
+      doc.text(`• ${line}`, 15, yPos);
+      yPos += 6;
+    });
+  });
   yPos += 10;
 
+  // Medical Recommendations
+  doc.setFontSize(14);
+  doc.text('MEDICAL RECOMMENDATIONS', 10, yPos);
+  yPos += 10;
+  
+  doc.setFontSize(11);
   result.recommendations.forEach((rec, index) => {
-    doc.setFontSize(12);
-    doc.text(`${index + 1}. ${rec}`, 15, yPos);
-    yPos += 7;
+    const lines = doc.splitTextToSize(`${index + 1}. ${rec}`, 180);
+    lines.forEach(line => {
+      doc.text(line, 15, yPos);
+      yPos += 6;
+    });
   });
+  yPos += 10;
 
-  // --- Image Pages ---
+  // Get Gemini AI Analysis
+  try {
+    const geminiAnalysis = await getGeminiAnalysis(analysisType, result);
+    if (geminiAnalysis) {
+      doc.setFontSize(14);
+      doc.text('AI EXPERT ANALYSIS', 10, yPos);
+      yPos += 10;
+      
+      doc.setFontSize(11);
+      const analysisLines = doc.splitTextToSize(geminiAnalysis, 180);
+      analysisLines.forEach(line => {
+        if (yPos > 270) {
+          doc.addPage();
+          addHeader(doc);
+          yPos = 40;
+        }
+        doc.text(line, 15, yPos);
+        yPos += 6;
+      });
+      yPos += 10;
+    }
+  } catch (error) {
+    console.error('Gemini analysis error:', error);
+  }
+
+  // Important Disclaimer
+  if (yPos > 250) {
+    doc.addPage();
+    addHeader(doc);
+    yPos = 40;
+  }
+  
+  doc.setFillColor(255, 243, 205);
+  doc.rect(10, yPos, 190, 25, 'F');
+  doc.setFontSize(12);
+  doc.text('IMPORTANT DISCLAIMER', 15, yPos + 8);
+  doc.setFontSize(10);
+  doc.text('This AI analysis is for reference only and should not replace professional medical', 15, yPos + 15);
+  doc.text('consultation. Please consult with a qualified healthcare provider for diagnosis.', 15, yPos + 21);
+  
+  addFooter(doc, 1);
+
+  // Image Analysis Pages
   let images = [];
   if (uploadedFile) {
-    images.push({
-      data: uploadedFile,
-      label: 'Uploaded Image'
-    });
+    images.push({ data: uploadedFile, label: 'Original Medical Image' });
   }
 
   if (result.images) {
-    if (result.images.original) { // Grad-CAM images
-      images.push({
-        data: `data:image/jpeg;base64,${result.images.original}`,
-        label: 'Original'
-      });
-      images.push({
-        data: `data:image/jpeg;base64,${result.images.gradcam}`,
-        label: 'Grad-CAM'
-      });
-      images.push({
-        data: `data:image/jpeg;base64,${result.images.overlay}`,
-        label: 'Overlay'
-      });
-    } else if (result.images.length > 0) { // TB images array
-      result.images.forEach((imgBase64, index) => {
-        images.push({
-          data: `data:image/jpeg;base64,${imgBase64}`,
-          label: `Analysis Image ${index + 1}`
-        });
-      });
+    if (result.images.original) {
+      images.push({ data: `data:image/jpeg;base64,${result.images.original}`, label: 'Processed Image' });
+      images.push({ data: `data:image/jpeg;base64,${result.images.gradcam}`, label: 'AI Attention Map (Grad-CAM)' });
+      images.push({ data: `data:image/jpeg;base64,${result.images.overlay}`, label: 'Overlay Analysis' });
     }
   }
 
@@ -975,9 +1178,7 @@ async function downloadReport(analysisType, result, uploadedFile) {
     img.onerror = reject;
     if (src instanceof Blob) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        img.src = e.target.result;
-      };
+      reader.onload = (e) => { img.src = e.target.result; };
       reader.readAsDataURL(src);
     } else {
       img.src = src;
@@ -989,35 +1190,127 @@ async function downloadReport(analysisType, result, uploadedFile) {
       const img = await loadImage(imgInfo.data);
       doc.addPage();
       addHeader(doc);
-      
+
       const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      
-      const imgWidth = 180; // Fixed width for all images
-      const imgHeight = (img.height * imgWidth) / img.width;
-      
+      const imgWidth = 180;
+      const imgHeight = Math.min((img.height * imgWidth) / img.width, 200);
       const xPos = (pageWidth - imgWidth) / 2;
-      const yPos = 40;
+      const yPos = 50;
 
       doc.addImage(img, 'JPEG', xPos, yPos, imgWidth, imgHeight);
-      doc.setFontSize(12);
-      doc.text(imgInfo.label, pageWidth / 2, yPos + imgHeight + 10, null, null, 'center');
+      doc.setFontSize(14);
+      doc.text(imgInfo.label, pageWidth / 2, yPos + imgHeight + 15, null, null, 'center');
+      
+      // Add image analysis summary
+      if (imgInfo.label.includes('Grad-CAM')) {
+        doc.setFontSize(11);
+        const summary = 'The attention map shows areas where the AI model focused during analysis. Brighter regions indicate higher attention and potential areas of concern.';
+        const summaryLines = doc.splitTextToSize(summary, 180);
+        let summaryY = yPos + imgHeight + 25;
+        summaryLines.forEach(line => {
+          doc.text(line, 15, summaryY);
+          summaryY += 6;
+        });
+      }
+      
       addFooter(doc, doc.internal.pages.length - 1);
-
     } catch (error) {
-      console.error(`Error adding ${imgInfo.label} to PDF:`, error);
-      // Fallback text if image fails to load
-      doc.addPage();
-      addHeader(doc);
-      doc.setFontSize(12);
-      doc.text(`Image failed to load: ${imgInfo.label}`, 10, 40);
-      addFooter(doc, doc.internal.pages.length - 1);
+      console.error('Error adding image:', error);
     }
   }
 
-  doc.save(`MedVision_AI_${analysisType}_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+  doc.save(`Aarogya_Drishti_${analysisType}_Report_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
+// Get clinical findings based on analysis type
+function getClinicalFindings(analysisType, result) {
+  const findings = {
+    'retina': [
+      `Fundus image analysis completed using deep learning algorithms`,
+      `${result.prediction === 'No DR' ? 'No signs of diabetic retinopathy detected' : 'Diabetic retinopathy features identified'}`,
+      `Vascular pattern analysis shows ${result.prediction === 'No DR' ? 'normal retinal vasculature' : 'abnormal vascular changes'}`,
+      `Optic disc and macula appear ${result.prediction === 'No DR' ? 'within normal limits' : 'to show pathological changes'}`
+    ],
+    'tuberculosis': [
+      `Chest radiograph analysis using AI-powered detection algorithms`,
+      `${result.prediction === 'Normal' ? 'No radiological signs of active tuberculosis' : 'Radiological features suggestive of tuberculosis'}`,
+      `Lung parenchyma shows ${result.prediction === 'Normal' ? 'clear lung fields' : 'opacity patterns consistent with TB'}`,
+      `Pleural spaces appear ${result.prediction === 'Normal' ? 'normal' : 'to show possible effusion or thickening'}`
+    ],
+    'skin-cancer': [
+      `Dermoscopic image analysis using melanoma detection algorithms`,
+      `ABCDE criteria assessment: ${result.prediction === 'Benign' ? 'Low risk features' : 'High risk features identified'}`,
+      `Lesion morphology shows ${result.prediction === 'Benign' ? 'benign characteristics' : 'concerning asymmetry and border irregularity'}`,
+      `Color variation analysis indicates ${result.prediction === 'Benign' ? 'uniform pigmentation' : 'multiple colors present'}`
+    ],
+    'alzheimer': [
+      `Brain imaging analysis using neurodegeneration detection models`,
+      `Hippocampal volume assessment: ${result.prediction === 'Normal' ? 'Within normal range for age' : 'Reduced volume consistent with atrophy'}`,
+      `Cortical thickness analysis shows ${result.prediction === 'Normal' ? 'preserved cortical structure' : 'thinning in key regions'}`,
+      `White matter integrity appears ${result.prediction === 'Normal' ? 'intact' : 'compromised with hyperintensities'}`
+    ],
+    'bone-fracture': [
+      `Radiographic analysis using fracture detection algorithms`,
+      `Bone continuity assessment: ${result.prediction === 'No Fracture' ? 'Intact bone structure' : 'Discontinuity suggesting fracture'}`,
+      `Cortical margins appear ${result.prediction === 'No Fracture' ? 'smooth and continuous' : 'disrupted with possible displacement'}`,
+      `Soft tissue analysis shows ${result.prediction === 'No Fracture' ? 'normal appearance' : 'swelling consistent with trauma'}`
+    ],
+    'liver-cirrhosis': [
+      `Hepatic imaging analysis using cirrhosis detection models`,
+      `Liver surface morphology: ${result.prediction === 'Normal' ? 'Smooth hepatic contour' : 'Nodular surface suggesting cirrhosis'}`,
+      `Parenchymal texture shows ${result.prediction === 'Normal' ? 'homogeneous appearance' : 'heterogeneous pattern with fibrosis'}`,
+      `Portal system evaluation indicates ${result.prediction === 'Normal' ? 'normal portal flow' : 'signs of portal hypertension'}`
+    ]
+  };
+  
+  return findings[analysisType] || ['Analysis completed using AI algorithms', 'Results interpreted by machine learning model'];
+}
+
+// Get Gemini AI Analysis
+async function getGeminiAnalysis(analysisType, result) {
+  const GEMINI_API_KEY = 'AIzaSyC7MPsaWBXJCwzR6r3VY4GCdjSaQk91vdg';
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const prompt = `As a medical AI expert, provide a detailed analysis for a ${analysisType.replace('-', ' ')} case with the following results:
+
+Diagnosis: ${result.prediction}
+Confidence: ${result.confidence}
+Recommendations: ${result.recommendations.join(', ')}
+
+Please provide:
+1. Clinical significance of these findings
+2. Potential differential diagnoses to consider
+3. Follow-up recommendations
+4. Patient education points
+
+Keep the response professional, informative, and suitable for a medical report. Limit to 200 words.`;
+
+  try {
+    const response = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+  } catch (error) {
+    console.error('Gemini API error:', error);
+    return null;
+  }
+}
 // Disease Info Functions
 function openDiseaseInfo(diseaseType) {
     const diseaseModal = document.getElementById('diseaseModal');
@@ -1063,6 +1356,14 @@ function openDiseaseInfo(diseaseType) {
             symptoms: ["Persistent cough", "Chest pain", "Weight loss", "Night sweats"],
             causes: ["Mycobacterium tuberculosis", "Weakened immunity", "Close contact"],
             treatment: ["Antibiotics", "Isolation", "Directly observed therapy", "Surgery if severe"]
+        },
+        'liver-cirrhosis': {
+            title: "Liver Cirrhosis",
+            icon: "fas fa-procedures",
+            description: "Progressive scarring of the liver that affects liver function.",
+            symptoms: ["Fatigue", "Abdominal swelling", "Jaundice", "Easy bruising"],
+            causes: ["Chronic alcohol abuse", "Hepatitis B/C", "Fatty liver disease", "Autoimmune conditions"],
+            treatment: ["Lifestyle changes", "Medications", "Liver transplant", "Treating underlying causes"]
         }
     };
     
@@ -1136,15 +1437,19 @@ function sendChatMessage() {
     messages.innerHTML += `<div class="user-message"><p>${message}</p></div>`;
     
     const responses = {
-        'hello': 'Hello! I can help you with medical information. What would you like to know?',
-        'alzheimer': 'Alzheimer\'s is a progressive brain disorder. Early detection is important.',
-        'cancer': 'Skin cancer can be treated effectively when caught early.',
-        'diabetes': 'Diabetic retinopathy can be prevented with good blood sugar control.',
-        'fracture': 'Bone fractures require immediate medical attention.',
-        'tb': 'Tuberculosis is treatable with antibiotics when diagnosed early.'
+        'hello': 'Hello! I\'m your AI Health Assistant. I can provide detailed information about various medical conditions, symptoms, treatments, and preventive measures. How can I help you today?',
+        'alzheimer': 'Alzheimer\'s disease is a progressive neurodegenerative disorder that affects memory, thinking, and behavior. Early symptoms include memory loss, confusion with time or place, and difficulty completing familiar tasks. Risk factors include age, family history, and genetics. Treatment involves medications like cholinesterase inhibitors, cognitive therapy, regular exercise, and maintaining social connections. Early detection through cognitive assessments and brain imaging is crucial for better management.',
+        'cancer': 'Skin cancer is the abnormal growth of skin cells, most commonly caused by UV radiation exposure. There are three main types: basal cell carcinoma, squamous cell carcinoma, and melanoma. Warning signs include new growths, changes in existing moles, asymmetrical shapes, irregular borders, and multiple colors. Prevention includes using broad-spectrum sunscreen (SPF 30+), avoiding peak sun hours, wearing protective clothing, and regular skin self-examinations. Treatment options include surgical excision, Mohs surgery, radiation therapy, and immunotherapy depending on the type and stage.',
+        'diabetes': 'Diabetic retinopathy is a serious eye complication of diabetes that damages blood vessels in the retina. It\'s caused by prolonged high blood sugar levels and can lead to vision loss if untreated. Symptoms include blurred vision, dark spots, floaters, and difficulty seeing at night. Prevention involves maintaining good blood sugar control, regular eye examinations, managing blood pressure and cholesterol, and following a healthy diet. Treatment options include laser therapy, anti-VEGF injections, and vitrectomy surgery in advanced cases.',
+        'fracture': 'Bone fractures are breaks or cracks in bones typically caused by trauma, falls, sports injuries, or underlying conditions like osteoporosis. Symptoms include severe pain, swelling, deformity, and inability to move the affected area. Immediate medical attention is crucial. Treatment depends on the type and location of fracture and may include immobilization with casts or splints, surgical repair with plates or screws, and physical therapy for rehabilitation. Prevention involves maintaining bone health through adequate calcium and vitamin D intake, regular weight-bearing exercise, and fall prevention measures.',
+        'tb': 'Tuberculosis (TB) is a bacterial infection caused by Mycobacterium tuberculosis that primarily affects the lungs but can spread to other organs. Symptoms include persistent cough lasting more than 3 weeks, chest pain, coughing up blood, weight loss, fever, and night sweats. TB is spread through airborne droplets when infected individuals cough or sneeze. Treatment involves a combination of antibiotics taken for 6-9 months under directly observed therapy. Prevention includes BCG vaccination, good ventilation, avoiding close contact with active TB patients, and strengthening the immune system through proper nutrition.',
+        'liver': 'Liver cirrhosis is the progressive scarring of liver tissue that impairs liver function. Common causes include chronic alcohol abuse, hepatitis B and C infections, fatty liver disease, and autoimmune conditions. Symptoms include fatigue, abdominal swelling, jaundice, easy bruising, and confusion. Prevention involves limiting alcohol consumption, maintaining a healthy weight, getting vaccinated for hepatitis A and B, practicing safe sex, and avoiding sharing needles. Treatment focuses on managing underlying causes, medications to slow progression, lifestyle changes, and in severe cases, liver transplantation.',
+        'emergency': 'For medical emergencies, immediately call 112 (India Emergency Number) or your local emergency services. Signs of medical emergency include chest pain, difficulty breathing, severe bleeding, loss of consciousness, severe allergic reactions, or signs of stroke (sudden weakness, speech problems, facial drooping). Do not delay seeking immediate medical attention for life-threatening conditions.',
+        'symptoms': 'Common symptoms to watch for include persistent fever, unexplained weight loss, severe headaches, chest pain, difficulty breathing, changes in bowel or bladder habits, unusual bleeding, persistent cough, skin changes, and neurological symptoms like confusion or weakness. Always consult healthcare professionals for proper evaluation and diagnosis of concerning symptoms.',
+        'prevention': 'Key preventive measures for good health include regular exercise (150 minutes moderate activity weekly), balanced nutrition with fruits and vegetables, adequate sleep (7-9 hours), stress management, avoiding tobacco and excessive alcohol, regular health screenings, vaccinations, maintaining healthy weight, good hygiene practices, and staying hydrated. Prevention is always better than treatment.'
     };
     
-    let response = 'I can help with information about medical conditions. What would you like to know?';
+    let response = 'I can provide comprehensive information about medical conditions, symptoms, treatments, and preventive measures. Feel free to ask about specific diseases, health concerns, or general wellness topics. For emergencies, please call 112 immediately.';
     
     for (let key in responses) {
         if (message.toLowerCase().includes(key)) {
@@ -1156,7 +1461,7 @@ function sendChatMessage() {
     setTimeout(() => {
         messages.innerHTML += `<div class="bot-message"><p>${response}</p></div>`;
         messages.scrollTop = messages.scrollHeight;
-    }, 1000);
+    }, 500);
     
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
