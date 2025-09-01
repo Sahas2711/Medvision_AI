@@ -1,6 +1,9 @@
 // Global variables
 let uploadedFile = null;
-const API_BASE_URL = 'http://localhost:5000';
+// API Configuration for deployment
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:5000' 
+    : 'https://medvision-ai-backend.onrender.com'; // Replace with your actual Render backend URL
 
 // Helper function to get image source
 function getImageSrc(images, key, index) {
@@ -631,7 +634,7 @@ function showAlzheimerResult(result) {
                 </div>
                 <div class="notification-actions">
                     <button class="btn-primary" onclick="downloadReport('alzheimer', ${JSON.stringify(result).replace(/"/g, '&quot;')})">Download Detailed Report</button>
-                    <button class="btn-secondary">Save to Dashboard</button>
+                    <button class="btn-secondary">Redirect to Dashboard</button>
                 </div>
             </div>
         </div>
