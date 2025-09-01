@@ -2,8 +2,9 @@ services:
   - type: web
     name: aarogya-drishti
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python backend/app_deploy.py"
+    runtime: python-3.11.9
+    buildCommand: "pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT backend.app_deploy:app"
     envVars:
       - key: PORT
         value: 10000
