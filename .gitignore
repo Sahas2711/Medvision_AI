@@ -1,21 +1,25 @@
-# Ignore zip files
-*.zip
-
-# Ignore keras/tensorflow model files
-*.keras
+# Model files
 *.h5
+*.keras
+frontend/*.h5
+frontend/*.keras
 
-# Ignore datasets and sample images
-Sample-images/
-Retina/
-project1/
-project2/
-
-# Ignore compiled / cache files
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
 
-# Ignore OS / editor files
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
 Thumbs.db

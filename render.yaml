@@ -3,7 +3,7 @@ services:
     name: aarogya-drishti
     env: python
     runtime: python-3.12   # Better compatibility with TensorFlow
-    buildCommand: "pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt && python -c 'import requests; import os; os.makedirs(\"frontend\", exist_ok=True); print(\"Models will be downloaded on first use\")'"
+    buildCommand: "export GIT_LFS_SKIP_SMUDGE=1 && pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt"
     startCommand: "cd backend && python app_deploy.py"
     envVars:
       - key: PORT
