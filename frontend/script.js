@@ -3,7 +3,7 @@ let uploadedFile = null;
 // API Configuration for deployment
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:5000' 
-    : 'https://medvision-ai-backend.onrender.com'; // Replace with your actual Render backend URL
+    : window.location.origin; // Use same domain for backend
 
 // Helper function to get image source
 function getImageSrc(images, key, index) {
