@@ -29,19 +29,30 @@ import os
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 frontend_path = os.path.join(project_root, 'frontend')
 
-retina_model = load_model(os.path.join(frontend_path, 'best_retina_model.h5'), 'Retina')
-tb_model = load_model(os.path.join(frontend_path, 'best_tb_mobilenetv2.h5'), 'TB')
-skin_model = load_model(os.path.join(frontend_path, 'skin_cancer_model.h5'), 'Skin cancer')
-alzheimer_model = load_model(os.path.join(frontend_path, 'best_alzheimer_model.h5'), 'Alzheimer')
-bone_model = load_model(os.path.join(frontend_path, 'bone_fracture_model.h5'), 'Bone fracture')
-# liver_model = None  # Model file not available
+# Lazy loading - models loaded on demand
+_models = {}
+
+def get_model(model_type):
+    if model_type not in _models:
+        model_paths = {
+            'retina': 'best_retina_model.h5',
+            'tb': 'best_tb_mobilenetv2.h5', 
+            'skin': 'skin_cancer_model.h5',
+            'alzheimer': 'best_alzheimer_model.h5',
+            'bone': 'bone_fracture_model.h5'
+        }
+        if model_type in model_paths:
+            _models[model_type] = load_model(os.path.join(frontend_path, model_paths[model_type]), model_type.capitalize())
+        else:
+            _models[model_type] = None
+    return _models[model_type]
 
 # ==================================
 # Prediction Type Mapping
 # ==================================
 predict_type_map = {
     'retina': {
-        'model': retina_model,
+        'model': lambda: get_model('retina'),
         'target_size': (224, 224),
         'get_recommendations': lambda p: {
             'No DR': ['No diabetic retinopathy detected', 'Continue regular eye examinations'],
@@ -50,7 +61,7 @@ predict_type_map = {
         'classes': ['No DR', 'DR Detected']
     },
     'tb': {
-        'model': tb_model,
+        'model': lambda: get_model('tb'),
         'target_size': (224, 224),
         'get_recommendations': lambda p: {
             'Normal': ['No TB detected', 'Routine monitoring'],
@@ -59,7 +70,7 @@ predict_type_map = {
         'classes': ['Normal', 'TB Detected']
     },
     'skin': {
-        'model': skin_model,
+        'model': lambda: get_model('skin'),
         'target_size': (150, 150),
         'get_recommendations': lambda p: {
             'Benign': ['Benign lesion detected', 'Continue monitoring', 'Regular skin checks recommended'],
@@ -68,7 +79,7 @@ predict_type_map = {
         'classes': ['Benign', 'Malignant']
     },
     'alzheimer': {
-        'model': alzheimer_model,
+        'model': lambda: get_model('alzheimer'),
         'target_size': (150, 150),
         'get_recommendations': lambda p: {
             'Normal': ['No Alzheimer detected', 'Continue regular monitoring', 'Maintain healthy lifestyle'],
@@ -77,7 +88,7 @@ predict_type_map = {
         'classes': ['Normal', 'Alzheimer Detected']
     },
     'bone': {
-        'model': bone_model,
+        'model': lambda: get_model('bone'),
         'target_size': (224, 224),
         'get_recommendations': lambda p: {
             'No Fracture': ['No fracture detected', 'Continue normal activities', 'Monitor for persistent pain'],
@@ -190,11 +201,12 @@ def unified_predict(predict_type):
         if not config:
             return jsonify({'success': False, 'error': 'Invalid prediction type'}), 404
         
-        model = config['model']
+        model_func = config['model']
         target_size = config['target_size']
         get_recs = config['get_recommendations']
         classes = config['classes']
 
+        model = model_func() if callable(model_func) else model_func
         if model is None:
             raise Exception(f"{predict_type.capitalize()} model not loaded")
         
@@ -318,11 +330,11 @@ def generate_demo_images():
 @app.route('/health', methods=['GET'])
 def health_check():
     model_status = {
-        'retina': retina_model is not None,
-        'tb': tb_model is not None,
-        'skin': skin_model is not None,
-        'alzheimer': alzheimer_model is not None,
-        'bone': bone_model is not None
+        'retina': get_model('retina') is not None,
+        'tb': get_model('tb') is not None,
+        'skin': get_model('skin') is not None,
+        'alzheimer': get_model('alzheimer') is not None,
+        'bone': get_model('bone') is not None
     }
     return jsonify({
         'status': 'healthy',
