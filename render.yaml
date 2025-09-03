@@ -4,7 +4,7 @@ services:
     env: python
     runtime: python-3.12   # Better compatibility with TensorFlow
     buildCommand: "pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt"
-    startCommand: "gunicorn --bind 0.0.0.0:$PORT backend.app_deploy:app"
+    startCommand: "cd backend && python app_deploy.py"
     envVars:
       - key: PORT
         value: 10000

@@ -24,12 +24,17 @@ def load_model(path, model_name):
         print(f"Error loading {model_name} model from {path}: {e}")
         return None
 
-retina_model = load_model('../frontend/best_retina_model.h5', 'Retina')
-tb_model = load_model('../frontend/best_tb_mobilenetv2.h5', 'TB')
-skin_model = load_model('../frontend/skin_cancer_model.h5', 'Skin cancer')
-alzheimer_model = load_model('../frontend/best_alzheimer_model.h5', 'Alzheimer')
-bone_model = load_model('../frontend/bone_fracture_model.h5', 'Bone fracture')
-liver_model = load_model('../frontend/Liver_cirrhosis.keras', 'Liver cirrhosis')
+# Get the absolute path to the project root
+import os
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+frontend_path = os.path.join(project_root, 'frontend')
+
+retina_model = load_model(os.path.join(frontend_path, 'best_retina_model.h5'), 'Retina')
+tb_model = load_model(os.path.join(frontend_path, 'best_tb_mobilenetv2.h5'), 'TB')
+skin_model = load_model(os.path.join(frontend_path, 'skin_cancer_model.h5'), 'Skin cancer')
+alzheimer_model = load_model(os.path.join(frontend_path, 'best_alzheimer_model.h5'), 'Alzheimer')
+bone_model = load_model(os.path.join(frontend_path, 'bone_fracture_model.h5'), 'Bone fracture')
+# liver_model = None  # Model file not available
 
 # ==================================
 # Prediction Type Mapping
@@ -79,16 +84,8 @@ predict_type_map = {
             'Fracture Detected': ['Fracture detected', 'Orthopedic consultation required', 'Immediate medical attention needed']
         }.get(p, ['Consult healthcare provider']),
         'classes': ['No Fracture', 'Fracture Detected']
-    },
-    'liver': {
-        'model': liver_model,
-        'target_size': (224, 224),
-        'get_recommendations': lambda p: {
-            'Normal': ['No liver cirrhosis detected', 'Continue healthy lifestyle', 'Regular monitoring recommended'],
-            'Cirrhosis Detected': ['Liver cirrhosis detected', 'Hepatologist consultation required', 'Immediate medical evaluation needed']
-        }.get(p, ['Consult healthcare provider']),
-        'classes': ['Normal', 'Cirrhosis Detected']
     }
+    # 'liver' model temporarily disabled - model file not available
 }
 
 # ==================================
@@ -325,8 +322,7 @@ def health_check():
         'tb': tb_model is not None,
         'skin': skin_model is not None,
         'alzheimer': alzheimer_model is not None,
-        'bone': bone_model is not None,
-        'liver': liver_model is not None
+        'bone': bone_model is not None
     }
     return jsonify({
         'status': 'healthy',
