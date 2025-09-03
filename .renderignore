@@ -1,4 +1,5 @@
-*.bat
-start_all.bat
-start_backend.bat
-start.bat
+frontend/*.h5
+frontend/*.keras
+*.h5
+*.keras
+.git/lfs/
