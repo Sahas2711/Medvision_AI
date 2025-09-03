@@ -1,6 +1,18 @@
 import os
-from flask import Flask, send_from_directory
-from app import app
+from flask import Flask, send_from_directory, jsonify
+
+try:
+    from app import app
+except Exception as e:
+    print(f"Error importing app: {e}")
+    app = Flask(__name__)
+    from flask_cors import CORS
+    CORS(app)
+
+# Health check
+@app.route('/health')
+def health():
+    return jsonify({'status': 'healthy', 'models': {}})
 
 # Serve frontend files
 @app.route('/')

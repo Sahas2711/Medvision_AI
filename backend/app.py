@@ -42,7 +42,11 @@ def get_model(model_type):
             'bone': 'bone_fracture_model.h5'
         }
         if model_type in model_paths:
-            _models[model_type] = load_model(os.path.join(frontend_path, model_paths[model_type]), model_type.capitalize())
+            try:
+                _models[model_type] = load_model(os.path.join(frontend_path, model_paths[model_type]), model_type.capitalize())
+            except Exception as e:
+                print(f"Failed to load {model_type} model: {e}")
+                _models[model_type] = None
         else:
             _models[model_type] = None
     return _models[model_type]
@@ -329,13 +333,12 @@ def generate_demo_images():
 # ==================================
 @app.route('/health', methods=['GET'])
 def health_check():
-    model_status = {
-        'retina': get_model('retina') is not None,
-        'tb': get_model('tb') is not None,
-        'skin': get_model('skin') is not None,
-        'alzheimer': get_model('alzheimer') is not None,
-        'bone': get_model('bone') is not None
-    }
+    model_status = {}
+    for model_type in ['retina', 'tb', 'skin', 'alzheimer', 'bone']:
+        try:
+            model_status[model_type] = get_model(model_type) is not None
+        except:
+            model_status[model_type] = False
     return jsonify({
         'status': 'healthy',
         'models': model_status
