@@ -11,7 +11,7 @@ app.secret_key = 'doctor-finder-enhanced-2024'
 CORS(app)
 
 # MongoDB connection
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://202301040048:202301040048@automatictimetablegenra.zxd5znp.mongodb.net/')
 db = client['medical_app']
 users = db['users']
 

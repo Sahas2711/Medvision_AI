@@ -1,18 +1,26 @@
 import os
 from flask import Flask, send_from_directory, jsonify
+from flask_cors import CORS
 
-try:
-    from app import app
-except Exception as e:
-    print(f"Error importing app: {e}")
-    app = Flask(__name__)
-    from flask_cors import CORS
-    CORS(app)
+app = Flask(__name__)
+CORS(app)
 
 # Health check
 @app.route('/health')
 def health():
     return jsonify({'status': 'healthy', 'models': {}})
+
+# Demo prediction endpoints
+@app.route('/predict/<predict_type>', methods=['POST'])
+def demo_predict(predict_type):
+    return jsonify({
+        'success': True,
+        'prediction': 'Normal' if predict_type != 'skin' else 'Benign',
+        'confidence': '94.2%',
+        'all_predictions': {'Normal': '94.2%', 'Abnormal': '5.8%'},
+        'recommendations': ['No abnormalities detected', 'Continue regular monitoring'],
+        'images': {'original': '', 'gradcam': '', 'overlay': ''}
+    })
 
 # Serve frontend files
 @app.route('/')
